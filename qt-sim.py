@@ -109,11 +109,21 @@ class FlowingObject(Actor):
 
     #Need some improve
     def handle_ParticleMessage(self, msg):
-        print self.checkbox_actor.text(), " got message : ", msg['destroy']
-        if self.checkbox_actor.text() in msg['destroy']:
-            if self.checkbox_actor.isChecked():
-                print "Closing checkbox actor..."
-                self.checkbox_actor.close()
+        try:
+            print self.checkbox_actor.text(), " got message : ", msg['destroy']
+            if self.checkbox_actor.text() in msg['destroy']:
+                if self.checkbox_actor.isChecked():
+                    print "Closing checkbox actor..."
+                    self.checkbox_actor.close()
+
+        except Exception as e:
+            print e
+
+        try:
+            if self.checkbox_actor.text() in msg['uncheck']:
+                self.checkbox_actor.setCheckState(False)
+        except:
+            pass
 
     def action(self):
         self.checkbox_actor.stateChanged.connect(self.actor_callback)
