@@ -9,9 +9,8 @@ class MainWindow(Actor, Qt.QtGui.QMainWindow):
         Qt.QtGui.QMainWindow.__init__(self)
         Actor.__init__(self)
         self.ui = Qt.loadUI('test.ui')
-        self.game_level = 2
+        self.game_level = 1
         self.ui.lcdNumber.display(self.game_level)
-        
         self.COMPLETED_STYLE = """
         QProgressBar {
             border: 2px solid grey;
@@ -68,15 +67,21 @@ class MainWindow(Actor, Qt.QtGui.QMainWindow):
         test5.direction = False
         test4.direction = False
 
+        while True:
+            print "Actors are working .... "
+            sleep(2)
         
     
     def handle_HealthMessage(self, msg):
         self.current_health += 1 if msg['val'] else -1
         print "Got Healt Message, New HEALTH: ", self.current_health
         self.ui.progressBar.setValue(self.current_health)
+        print "Sending LedPanelMessage.."
+        self.send({'LedPanelMessage': {'message': 'Health.. '+str(self.current_health) }})
         if self.ui.progressBar.value() <= 10:
+            print "WARNING... YOU WILL DIE!"
             self.ui.progressBar.setStyleSheet(self.COMPLETED_STYLE)
-            
+
             
 
     
@@ -106,10 +111,9 @@ class FlowingObject(Actor):
     def handle_ParticleMessage(self, msg):
         print self.checkbox_actor.text(), " got message : ", msg['destroy']
         if self.checkbox_actor.text() in msg['destroy']:
-            print "killing actor"
             if self.checkbox_actor.isChecked():
+                print "Closing checkbox actor..."
                 self.checkbox_actor.close()
-
 
     def action(self):
         self.checkbox_actor.stateChanged.connect(self.actor_callback)
@@ -117,14 +121,14 @@ class FlowingObject(Actor):
             self.speed_constant = 0.01
         if win.game_level == 3:
             self.speed_constant = 0.001
-
         self.delay_time = 1 if self.speed == 0 else self.speed_constant * 1 / self.speed
+
         while True:
             self.flow_randomly()
             self.y = random.randrange(100,600,1)
 
     def clean_check(self):
-        self.checkbox_actor.unchecked()
+        self.checkbox_actor.setCheckState(False)
 
     def flow_randomly(self):
         if self.direction:
@@ -141,7 +145,7 @@ class FlowingObject(Actor):
 
 if __name__ == "__main__":
     import sys
-    ProxyActor(brokers='192.168.1.42:5012:5013')
+    ProxyActor(brokers='192.168.1.42:5012:5013 192.168.1.59:5012:5013')
     app = Qt.QtGui.QApplication(sys.argv)
     win = MainWindow()
     win.ui.show()
