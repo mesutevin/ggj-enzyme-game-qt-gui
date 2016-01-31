@@ -9,18 +9,73 @@ class MainWindow(Actor, Qt.QtGui.QMainWindow):
         Qt.QtGui.QMainWindow.__init__(self)
         Actor.__init__(self)
         self.ui = Qt.loadUI('test.ui')
-
+        self.game_level = 1
+        self.ui.lcdNumber.display(self.game_level)
+        
+        self.COMPLETED_STYLE = """
+        QProgressBar {
+            border: 2px solid grey;
+            border-radius: 5px;
+            text-align: center;
+         }
+        QProgressBar::chunk {
+            background-color: #FF0000;
+            width: 20px;
+        }
+        
+        """
+        self.DEFAULT_STYLE = """
+        QProgressBar {
+            border: 2px solid grey;
+            border-radius: 5px;
+            text-align: center;
+        }
+        QProgressBar::chunk {
+            background-color: #74ACE8;
+            width: 20px;
+        }
+        
+        """
+        self.ui.progressBar.setStyleSheet(self.DEFAULT_STYLE)
+        
     def action(self):
+        self.current_health = self.ui.progressBar.value()
         test = FlowingObject(self.ui.checkBox)
         test2 = FlowingObject(self.ui.checkBox_2)
         test3 = FlowingObject(self.ui.checkBox_3)
         test4 = FlowingObject(self.ui.checkBox_4)
         test5 = FlowingObject(self.ui.checkBox_5)
-        test.level = 5
-        test2.level = 1
-        test3.level = 3
-        test4.level = 0
-        test5.level = 8
+        FlowingObject(self.ui.checkBox_6)
+        FlowingObject(self.ui.checkBox_7)
+        FlowingObject(self.ui.checkBox_8)
+        FlowingObject(self.ui.checkBox_9)
+        FlowingObject(self.ui.checkBox_10)
+        FlowingObject(self.ui.checkBox_11)
+        FlowingObject(self.ui.checkBox_12)
+        FlowingObject(self.ui.checkBox_13)
+        FlowingObject(self.ui.checkBox_14)
+        FlowingObject(self.ui.checkBox_15)
+
+        test.speed = 5
+        test2.speed = 1
+        test3.speed = 3
+        test4.speed = 2
+        test5.speed = 8
+        test5.direction = False
+        test4.direction = False
+
+        
+    
+    def handle_HealthMessage(self, msg):
+        self.current_health += 1 if msg['val'] else -1
+        print "Got Healt Message, New HEALTH: ", self.current_health
+        self.ui.progressBar.setValue(self.current_health)
+        if self.ui.progressBar.value() <= 10:
+            self.ui.progressBar.setStyleSheet(self.COMPLETED_STYLE)
+            
+            
+
+    
         
 class FlowingObject(Actor):
     def __init__(self, checkbox):
@@ -28,23 +83,50 @@ class FlowingObject(Actor):
         self.checkbox_actor = checkbox
         self.x =self.checkbox_actor.x()
         self.y =self.checkbox_actor.y()
-        self.level = 4
+        #self.speed = 4
+        #self.delay_time = 1
+        #self.level = 1
+
+        self.speed = random.randrange(1,5,1)
+
         self.delay_time = 1
-        
+        self.direction = random.choice([True, False])
+
+    def actor_callback(self):
+        checked = self.checkbox_actor.isChecked()
+        print self.checkbox_actor.text(), "is send message : ", checked
+        self.send({self.checkbox_actor.text(): {'val': checked} })
+
+    #Need some improve
+    def handle_ParticleMessage(self, msg):
+        try:
+            print self.checkbox_actor.text(), " got message : ", msg['destroy']
+            if self.checkbox_actor.text() in msg['destroy']:
+                self.ui.deleteLayer()
+        except Exception as e:
+            print e
+
+    
+    
     def action(self):
-        self.delay_time = 1 if self.level == 0 else 0.01*self.level
+        self.checkbox_actor.stateChanged.connect(self.actor_callback)
+        self.delay_time = 1 if self.speed == 0 else 0.01* 1 / self.speed
         while True:
-            for i in range(2,600):
-                print i
-                self.checkbox_actor.move(i, self.y)
-                i = i - 2
-                sleep(self.delay_time)
+            if self.direction:
+                for i in range(2,600):
+                    self.checkbox_actor.move(i, self.y)
+                    i = i - 2
+                    sleep(self.delay_time)
+            else:
+                for i in range(600,2,-1):
+                    self.checkbox_actor.move(i, self.y)
+                    i = i - 2
+                    sleep(self.delay_time)
 
 
 if __name__ == "__main__":
     import sys
-    #ProxyActor(brokers='192.168.2.164:5012:5013')
-    ProxyActor()
+    ProxyActor(brokers='192.168.1.42:5012:5013')
     app = Qt.QtGui.QApplication(sys.argv)
     win = MainWindow()
     win.ui.show()
