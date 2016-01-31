@@ -9,7 +9,7 @@ class MainWindow(Actor, Qt.QtGui.QMainWindow):
         Qt.QtGui.QMainWindow.__init__(self)
         Actor.__init__(self)
         self.ui = Qt.loadUI('test.ui')
-        self.game_level = 1
+        self.game_level = 2
         self.ui.lcdNumber.display(self.game_level)
         self.COMPLETED_STYLE = """
         QProgressBar {
@@ -145,18 +145,18 @@ class FlowingObject(Actor):
         if self.direction:
             for i in range(2,600):
                 self.checkbox_actor.move(i, self.y)
-                i = i - 2
+                i = i + random.randrange(1,5)
                 sleep(self.delay_time)
         else:
             for i in range(600,2,-1):
                 self.checkbox_actor.move(i, self.y)
-                i = i - 2
+                i = i - random.randrange(1,5)
                 sleep(self.delay_time)
 
 
 if __name__ == "__main__":
     import sys
-    ProxyActor(brokers='192.168.1.42:5012:5013 192.168.1.59:5012:5013')
+    ProxyActor(brokers='192.168.1.34:5012:5013 192.168.1.59:5012:5013')
     app = Qt.QtGui.QApplication(sys.argv)
     win = MainWindow()
     win.ui.show()
