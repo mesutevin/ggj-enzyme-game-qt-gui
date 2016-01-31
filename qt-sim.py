@@ -9,7 +9,7 @@ class MainWindow(Actor, Qt.QtGui.QMainWindow):
         Qt.QtGui.QMainWindow.__init__(self)
         Actor.__init__(self)
         self.ui = Qt.loadUI('test.ui')
-        self.game_level = 1
+        self.game_level = 2
         self.ui.lcdNumber.display(self.game_level)
         
         self.COMPLETED_STYLE = """
@@ -55,6 +55,10 @@ class MainWindow(Actor, Qt.QtGui.QMainWindow):
         FlowingObject(self.ui.checkBox_13)
         FlowingObject(self.ui.checkBox_14)
         FlowingObject(self.ui.checkBox_15)
+        FlowingObject(self.ui.checkBox_16)
+        FlowingObject(self.ui.checkBox_17)
+        FlowingObject(self.ui.checkBox_18)
+        FlowingObject(self.ui.checkBox_19)
 
         test.speed = 5
         test2.speed = 1
@@ -90,6 +94,7 @@ class FlowingObject(Actor):
         self.speed = random.randrange(1,5,1)
 
         self.delay_time = 1
+        self.speed_constant = 0.1
         self.direction = random.choice([True, False])
 
     def actor_callback(self):
@@ -99,29 +104,39 @@ class FlowingObject(Actor):
 
     #Need some improve
     def handle_ParticleMessage(self, msg):
-        try:
-            print self.checkbox_actor.text(), " got message : ", msg['destroy']
-            if self.checkbox_actor.text() in msg['destroy']:
-                self.ui.deleteLayer()
-        except Exception as e:
-            print e
+        print self.checkbox_actor.text(), " got message : ", msg['destroy']
+        if self.checkbox_actor.text() in msg['destroy']:
+            print "killing actor"
+            if self.checkbox_actor.isChecked():
+                self.checkbox_actor.close()
 
-    
-    
+
     def action(self):
         self.checkbox_actor.stateChanged.connect(self.actor_callback)
-        self.delay_time = 1 if self.speed == 0 else 0.01* 1 / self.speed
+        if win.game_level == 2:
+            self.speed_constant = 0.01
+        if win.game_level == 3:
+            self.speed_constant = 0.001
+
+        self.delay_time = 1 if self.speed == 0 else self.speed_constant * 1 / self.speed
         while True:
-            if self.direction:
-                for i in range(2,600):
-                    self.checkbox_actor.move(i, self.y)
-                    i = i - 2
-                    sleep(self.delay_time)
-            else:
-                for i in range(600,2,-1):
-                    self.checkbox_actor.move(i, self.y)
-                    i = i - 2
-                    sleep(self.delay_time)
+            self.flow_randomly()
+            self.y = random.randrange(100,600,1)
+
+    def clean_check(self):
+        self.checkbox_actor.unchecked()
+
+    def flow_randomly(self):
+        if self.direction:
+            for i in range(2,600):
+                self.checkbox_actor.move(i, self.y)
+                i = i - 2
+                sleep(self.delay_time)
+        else:
+            for i in range(600,2,-1):
+                self.checkbox_actor.move(i, self.y)
+                i = i - 2
+                sleep(self.delay_time)
 
 
 if __name__ == "__main__":

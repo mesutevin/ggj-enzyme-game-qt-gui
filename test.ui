@@ -56,8 +56,8 @@
    <widget class="QCheckBox" name="checkBox_4">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>300</y>
+      <x>570</x>
+      <y>450</y>
       <width>90</width>
       <height>20</height>
      </rect>
@@ -121,8 +121,8 @@
    <widget class="QCheckBox" name="checkBox_9">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>390</y>
+      <x>140</x>
+      <y>520</y>
       <width>90</width>
       <height>20</height>
      </rect>
@@ -134,8 +134,8 @@
    <widget class="QCheckBox" name="checkBox_10">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>250</y>
+      <x>220</x>
+      <y>180</y>
       <width>111</width>
       <height>71</height>
      </rect>
@@ -209,7 +209,7 @@
    <widget class="QCheckBox" name="checkBox_14">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>20</x>
       <y>380</y>
       <width>91</width>
       <height>61</height>
@@ -229,7 +229,59 @@
      </rect>
     </property>
     <property name="text">
+     <string>Enzim2</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_16">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>150</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
      <string>Enzim1</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_17">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>470</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enzim4</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_18">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>260</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enzim3</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox_19">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>400</y>
+      <width>81</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enzim5</string>
     </property>
    </widget>
   </widget>
