@@ -121,7 +121,8 @@ class FlowingObject(Actor):
 
         try:
             if self.checkbox_actor.text() in msg['uncheck']:
-                self.checkbox_actor.setCheckState(False)
+                if self.checkbox_actor.isChecked():
+                    self.checkbox_actor.setCheckState(False)
         except:
             pass
 
